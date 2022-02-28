@@ -16,11 +16,10 @@ import Alert from '@mui/material/Alert';
 function Copyright(props) {
     return (
         <Typography variant="body2" color="text.secondary" align="center" {...props}>
-            {'Copyright © '}
-            <Link color="inherit" href="https://mui.com/">
-                Your Website
+            {'Powered by '}
+            <Link color="inherit" href="https://github.com/hitman99/kubernetes-sandbox-kit">
+                Kubernetes Sandbox Kit
             </Link>{' '}
-            {new Date().getFullYear()}
             {'.'}
         </Typography>
     );
