@@ -1,0 +1,64 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: sandbox-kit-admin
+  namespace: {{ .Release.Namespace }}
+spec:
+  selector:
+    matchLabels:
+      app: admin
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: admin
+    spec:
+      containers:
+        - name: admin
+          image: __CONTAINER_IMAGE__
+          imagePullPolicy: IfNotPresent
+          command:
+            - ksk
+            - admin
+          ports:
+            - containerPort: 8080
+          resources:
+            requests:
+              cpu: "250m"
+            limits:
+              cpu: "250m"
+          envFrom:
+            - configMapRef:
+                name: workshop
+          env:
+            - name: KSK_ADMINTOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: workshop
+                  key: ADMIN_TOKEN
+
+      serviceAccount: sandbox-kit-admin
+
+      volumes:
+        - name: config
+          configMap:
+            name: workshop
+            items:
+              - key: config
+                path: config.yaml
+
+
+---
+
+kind: Service
+apiVersion: v1
+metadata:
+  name: admin
+  namespace: {{ .Release.Namespace }}
+spec:
+  selector:
+    app: sandbox-kit-admin
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080

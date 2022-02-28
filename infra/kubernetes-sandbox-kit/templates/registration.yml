@@ -1,0 +1,61 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: sandbox-kit-reg
+  namespace: {{ .Release.Namespace }}
+spec:
+  selector:
+    matchLabels:
+      app: registration
+  replicas: 5
+  template:
+    metadata:
+      labels:
+        app: registration
+    spec:
+      containers:
+        - name: registration
+          image: __CONTAINER_IMAGE__
+          imagePullPolicy: IfNotPresent
+          command:
+            - ksk
+            - register
+          ports:
+            - containerPort: 8080
+          resources:
+            requests:
+              cpu: "500m"
+            limits:
+              cpu: "500m"
+          envFrom:
+            - secretKeyRef:
+                name: workshop
+          volumeMounts:
+            - name: config
+              mountPath: /ksk/config.yaml
+              subPath: config.yaml
+      serviceAccount: workshop-admin
+      imagePullSecrets:
+        - name: gitlab-registry
+      volumes:
+        - name: config
+          configMap:
+            name: workshop
+            items:
+              - key: config
+                path: config.yaml
+
+---
+
+kind: Service
+apiVersion: v1
+metadata:
+  name: reg
+  namespace: {{ .Release.Namespace }}
+spec:
+  selector:
+    app: reg
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
