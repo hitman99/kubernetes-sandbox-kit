@@ -1,4 +1,4 @@
-apiVersion: apps/v1beta2
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: sandbox-kit-admin
@@ -6,16 +6,16 @@ metadata:
 spec:
   selector:
     matchLabels:
-      app: admin
+      app: sandbox-kit-admin
   replicas: 1
   template:
     metadata:
       labels:
-        app: admin
+        app: sandbox-kit-admin
     spec:
       containers:
         - name: admin
-          image: __CONTAINER_IMAGE__
+          image: {{ .Values.containerImage }}
           imagePullPolicy: IfNotPresent
           command:
             - ksk
@@ -28,24 +28,10 @@ spec:
             limits:
               cpu: "250m"
           envFrom:
-            - configMapRef:
-                name: workshop
-          env:
-            - name: KSK_ADMINTOKEN
-              valueFrom:
-                secretKeyRef:
-                  name: workshop
-                  key: ADMIN_TOKEN
+            - secretRef:
+                name: sandbox-kit
 
-      serviceAccount: sandbox-kit-admin
-
-      volumes:
-        - name: config
-          configMap:
-            name: workshop
-            items:
-              - key: config
-                path: config.yaml
+      serviceAccountName: sandbox-kit-admin
 
 
 ---

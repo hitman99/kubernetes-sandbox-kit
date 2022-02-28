@@ -1,0 +1,32 @@
+adminToken: sometoken
+
+containerImage: ghcr.io/hitman99/kubernetes-sandbox-kit:master@sha256:b607c1b92d8d4f6de61cf13720cf99d881815730aa6f6ca936748eff336c6e5d
+
+host: kubernetes.lab.example.com
+
+instructions: |
+  # Instructions in markdown
+
+  ## Autolink literals
+
+  www.example.com, https://example.com, and contact@example.com.
+
+  ## Footnote
+
+  A note[^1]
+
+  [^1]: Big note.
+
+  ## Strikethrough
+
+  ~one~ or ~~two~~ tildes.
+
+  ## Table
+
+  | a | b  |  c |  d  |
+  | - | :- | -: | :-: |
+
+  ## Tasklist
+
+  * [ ] to do
+  * [x] done

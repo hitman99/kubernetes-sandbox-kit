@@ -8,10 +8,11 @@ import (
 )
 
 type Config struct {
-	AdminToken string           `yaml:"adminToken"`
-	Kubernetes KubernetesConfig `yaml:"kubernetes"`
-	Redis      RedisConfig      `yaml:"redis"`
-	LogLevel   string           `yaml:"logLevel"`
+	AdminToken       string           `yaml:"adminToken"`
+	Kubernetes       KubernetesConfig `yaml:"kubernetes"`
+	Redis            RedisConfig      `yaml:"redis"`
+	LogLevel         string           `yaml:"logLevel"`
+	InstructionsPath string           `yaml:"instructionsPath"`
 }
 
 type RedisConfig struct {
@@ -49,6 +50,7 @@ func Get() (*Config, <-chan Config) {
 		v.SetDefault("redis.isCluster", false)
 		v.SetDefault("redis.address", "redis:6379")
 		v.SetDefault("logLevel", "info")
+		v.SetDefault("instructionsPath", "/ksk/instructions.yaml")
 
 		v.AutomaticEnv()
 		if err := v.ReadInConfig(); err != nil {
@@ -58,7 +60,7 @@ func Get() (*Config, <-chan Config) {
 			v.OnConfigChange(notify)
 		}
 		err := v.Unmarshal(cfg)
-		cfg.AdminToken = v.GetString("adminToken")
+		//cfg.AdminToken = v.GetString("adminToken")
 		if err != nil {
 			panic(err)
 		}
