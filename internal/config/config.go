@@ -2,6 +2,7 @@ package config
 
 import (
 	"github.com/fsnotify/fsnotify"
+	"github.com/gofrs/uuid"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 	"sync"
@@ -41,6 +42,7 @@ func Get() (*Config, <-chan Config) {
 		cfg = &Config{}
 		updates = make(chan Config)
 		kupdates = make(chan KubernetesConfig)
+		defaultAdminToken := uuid.Must(uuid.NewV4()).String()
 		v = viper.New()
 		v.SetEnvPrefix("ksk")
 		v.SetConfigType("yaml")
@@ -51,6 +53,9 @@ func Get() (*Config, <-chan Config) {
 		v.SetDefault("redis.address", "redis:6379")
 		v.SetDefault("logLevel", "info")
 		v.SetDefault("instructionsPath", "/ksk/instructions.yaml")
+		v.SetDefault("adminToken", defaultAdminToken)
+
+		log.Info("Default admin token", defaultAdminToken)
 
 		v.AutomaticEnv()
 		if err := v.ReadInConfig(); err != nil {
@@ -60,7 +65,6 @@ func Get() (*Config, <-chan Config) {
 			v.OnConfigChange(notify)
 		}
 		err := v.Unmarshal(cfg)
-		//cfg.AdminToken = v.GetString("adminToken")
 		if err != nil {
 			panic(err)
 		}

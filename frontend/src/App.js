@@ -7,7 +7,6 @@ import Readme from './readme';
 
 function App() {
   const [regData, setRegData] = useState(loadState());
-  console.log(regData);
   let view;
   if( !regData.user.id ) {
     view = <Registration regData={regData} setRegData={setRegData}/>

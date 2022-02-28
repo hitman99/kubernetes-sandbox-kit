@@ -24,9 +24,9 @@ spec:
             - containerPort: 8080
           resources:
             requests:
-              cpu: "250m"
+              cpu: "100m"
             limits:
-              cpu: "250m"
+              cpu: "100m"
           envFrom:
             - secretRef:
                 name: sandbox-kit

@@ -59,7 +59,6 @@ export default function Register(props) {
     if( state.isError ) {
         alert = <Alert severity="error">{state.errorMessage}</Alert>
     }
-    console.log(state)
     return (
         <ThemeProvider theme={theme}>
             <Container component="main" maxWidth="xs">

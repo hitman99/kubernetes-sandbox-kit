@@ -1,6 +1,6 @@
 adminToken: sometoken
 
-containerImage: ghcr.io/hitman99/kubernetes-sandbox-kit:master@sha256:b607c1b92d8d4f6de61cf13720cf99d881815730aa6f6ca936748eff336c6e5d
+containerImage: ghcr.io/hitman99/kubernetes-sandbox-kit:v1.0.0
 
 host: kubernetes.lab.example.com
 

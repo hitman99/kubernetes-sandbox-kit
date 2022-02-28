@@ -27,16 +27,13 @@ spec:
               cpu: "100m"
             limits:
               cpu: "100m"
-          envFrom:
-            - secretRef:
-                name: sandbox-kit
           env:
             - name: KSK_INSTRUCTIONSPATH
               value: /ksk/instructions.yaml
           volumeMounts:
             - name: config
               mountPath: /ksk/instructions.yaml
-              subPath: config.yaml
+              subPath: instructions.yaml
       serviceAccountName: sandbox-kit-admin
       imagePullSecrets:
         - name: gitlab-registry
