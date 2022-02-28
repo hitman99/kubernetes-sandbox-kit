@@ -16,7 +16,7 @@ spec:
       containers:
         - name: registration
           image: {{ .Values.containerImage }}
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: Always
           command:
             - ksk
             - registration

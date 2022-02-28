@@ -16,7 +16,7 @@ spec:
       containers:
         - name: admin
           image: {{ .Values.containerImage }}
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: Always
           command:
             - ksk
             - admin

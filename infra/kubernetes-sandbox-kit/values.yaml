@@ -1,4 +1,8 @@
 adminToken: sometoken
+# This is needed to generate kubeconfigs for users
+kubernetes:
+  apiUri:
+  apiCA:
 
 containerImage: ghcr.io/hitman99/kubernetes-sandbox-kit:v1.0.0
 
