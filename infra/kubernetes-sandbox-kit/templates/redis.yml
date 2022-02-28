@@ -44,7 +44,7 @@ spec:
       volumes:
         - name: redis-data
           persistentVolumeClaim:
-            claimName: redis
+            claimName: ksk-redis
 ---
 apiVersion: v1
 kind: Service

@@ -26,9 +26,15 @@ func runRegister() {
 	mainRouter.Route("/register", func(r chi.Router) {
 		r.Post("/", reg.CreateReg())
 	})
+
 	mainRouter.Route("/kubeconfig", func(r chi.Router) {
 		r.Get("/{userId}", reg.KubeconfigHandler())
 	})
+
+	mainRouter.Route("/instructions", func(r chi.Router) {
+		r.Get("/", reg.GetInstructions())
+	})
+
 	fs := http.StripPrefix("/", http.FileServer(http.Dir("frontend/dist")))
 	mainRouter.Route("/", func(r chi.Router) {
 		r.Get("/*", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {

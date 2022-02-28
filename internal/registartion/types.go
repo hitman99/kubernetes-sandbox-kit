@@ -6,8 +6,9 @@ import (
 )
 
 type Registration struct {
-	User       User           `json:"user"`
-	Kubernetes KubernetesInfo `json:"kubernetes"`
+	User         User           `json:"user"`
+	Kubernetes   KubernetesInfo `json:"kubernetes"`
+	Instructions string         `json:"instructions"`
 	common_http.Response
 }
 

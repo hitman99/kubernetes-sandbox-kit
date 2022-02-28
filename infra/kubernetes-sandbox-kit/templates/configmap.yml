@@ -4,5 +4,5 @@ metadata:
   name: instructions
   namespace: {{ .Release.Namespace }}
 data:
-  config: |-
+  yaml: |-
 {{ .Values.instructions | indent 4 }}

@@ -54,7 +54,7 @@ const ResponsiveAppBar = (props) => {
         props.setRegData(loadState())
     }
 
-    const {user, kubernetes} = props.regData;
+    const {user, kubernetes, instructions} = props.regData;
     return (
         <Box sx={{ flexGrow: 1 }}>
 
@@ -162,7 +162,7 @@ const ResponsiveAppBar = (props) => {
                                 Instructions
                             </Typography>
 
-                            <Instructions />
+                            <Instructions yaml={instructions}/>
                         </CardContent>
 
                     </Card>

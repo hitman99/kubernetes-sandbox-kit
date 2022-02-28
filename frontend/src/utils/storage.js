@@ -11,7 +11,8 @@ const loadState = () => {
                 kubernetes: {
                     namespace: '',
                     serverVersion: ''
-                }
+                },
+                instructions: ''
             }
     }
 }

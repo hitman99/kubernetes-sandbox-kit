@@ -1,6 +1,7 @@
 package registartion
 
 import (
+	"encoding/base64"
 	"encoding/json"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/render"
@@ -13,31 +14,34 @@ import (
 	"github.com/hitman99/kubernetes-sandbox/internal/utils"
 	"github.com/sirupsen/logrus"
 	"net/http"
+	"os"
 	"regexp"
 )
 
 type Reg struct {
-	redisClient *redis.Client
-	kubeClient  kubernetes.Client
-	logger      *logrus.Logger
-	emailRegex  *regexp.Regexp
+	redisClient      *redis.Client
+	kubeClient       kubernetes.Client
+	logger           *logrus.Logger
+	emailRegex       *regexp.Regexp
+	instructionsPath string
 }
 
 func New() *Reg {
 	logger := utils.SetupLogger()
-	cfg := config.GetRedisConfig()
+	cfg, _ := config.Get()
 	rcli := redis.NewClient(&redis.Options{
-		Addr: cfg.Address,
+		Addr: cfg.Redis.Address,
 	})
 	_, err := rcli.Ping().Result()
 	if err != nil {
 		logger.WithError(err).Fatal("cannot reach redis, exiting")
 	}
 	r := &Reg{
-		redisClient: rcli,
-		logger:      logger,
-		kubeClient:  kubernetes.MustNewClient(),
-		emailRegex:  regexp.MustCompile("^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$"),
+		redisClient:      rcli,
+		logger:           logger,
+		kubeClient:       kubernetes.MustNewClient(),
+		emailRegex:       regexp.MustCompile("^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$"),
+		instructionsPath: cfg.InstructionsPath,
 	}
 	return r
 }
@@ -99,6 +103,10 @@ func (s *Reg) CreateReg() func(w http.ResponseWriter, r *http.Request) {
 		reg.Kubernetes.ServerVersion = s.kubeClient.GetVersion()
 		w.WriteHeader(http.StatusCreated)
 		reg.Success = true
+		data, err := os.ReadFile(s.instructionsPath)
+		if err == nil {
+			reg.Instructions = base64.StdEncoding.EncodeToString(data)
+		}
 		err = json.NewEncoder(w).Encode(reg)
 		if err != nil {
 			s.logger.WithError(err).WithField("namespace", reg.Kubernetes.Namespace).Error("cannot send response")
@@ -211,4 +219,20 @@ func (s *Reg) emailAvailable(email string) (bool, error) {
 		}
 	}
 	return true, nil
+}
+
+func (s *Reg) GetInstructions() func(w http.ResponseWriter, r *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
+		data, err := os.ReadFile(s.instructionsPath)
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			_ = json.NewEncoder(w).Encode(common_http.Response{
+				Success: false,
+				Message: err.Error(),
+			})
+			return
+		}
+		w.WriteHeader(http.StatusOK)
+		_ = json.NewEncoder(w).Encode(base64.StdEncoding.EncodeToString(data))
+	}
 }
