@@ -16,7 +16,7 @@ LABEL maintainer="tomas@adomavicius.com"
 RUN apk --no-cache add ca-certificates && adduser gopher -D -H -u 1133
 WORKDIR /workshop
 COPY --from=0 /gosrc/ksk ksk
-COPY --from=1 /src/build frontend/dist
+COPY --from=1 /src/dist frontend/dist
 ENV PATH="/workshop/:${PATH}"
 
 EXPOSE 8080
