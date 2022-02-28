@@ -8,7 +8,7 @@ FROM node:16-alpine
 COPY frontend /src
 WORKDIR /src
 
-RUN npm install && npm run build
+RUN npm install && npm run build && ls -ltra
 
 FROM alpine:3.15
 LABEL maintainer="tomas@adomavicius.com"
@@ -16,7 +16,7 @@ LABEL maintainer="tomas@adomavicius.com"
 RUN apk --no-cache add ca-certificates && adduser gopher -D -H -u 1133
 WORKDIR /workshop
 COPY --from=0 /gosrc/ksk ksk
-COPY --from=1 /src/dist frontend/dist
+COPY --from=1 /src/build frontend/dist
 ENV PATH="/workshop/:${PATH}"
 
 EXPOSE 8080
