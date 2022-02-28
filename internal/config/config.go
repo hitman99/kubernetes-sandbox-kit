@@ -54,8 +54,10 @@ func Get() (*Config, <-chan Config) {
 		v.SetDefault("logLevel", "info")
 		v.SetDefault("instructionsPath", "/ksk/instructions.yaml")
 		v.SetDefault("adminToken", defaultAdminToken)
+		v.SetDefault("kubernetes.apiUri", "")
+		v.SetDefault("kubernetes.apiCa", "")
 
-		log.Info("Default admin token", defaultAdminToken)
+		log.Info("Default admin token: ", defaultAdminToken)
 
 		v.AutomaticEnv()
 		if err := v.ReadInConfig(); err != nil {
